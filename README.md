@@ -1,3 +1,4 @@
+![Tests](https://github.com/ishani1813/indian-retail-analytics/actions/workflows/tests.yml/badge.svg)
 # Indian Retail Sales Analytics
 
 End-to-end analyst project: raw data → Python cleaning → SQL analysis → Excel summary →
