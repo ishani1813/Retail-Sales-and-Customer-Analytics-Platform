@@ -150,3 +150,34 @@ streamlit run app/streamlit_app.py
 
 ## Dashboard
 [Indian Retail Sales Analytics — live on Tableau Public](https://public.tableau.com/app/profile/ishani.sarkar2749/viz/IndianRetailSalesAnalytics_17859999640720/Dashboard1)
+## Snowflake (cloud data warehouse)
+
+The same normalized schema and business queries also run on Snowflake, alongside the
+PostgreSQL setup above -- same SQL skills, different engine.
+
+**Setup:**
+1. Create a free trial account at https://signup.snowflake.com/ (30 days, no card needed)
+2. Find your account identifier: Snowsight -> bottom-left account menu -> "Account" tab
+   (looks like `abc12345.ap-south-1`)
+3. Set credentials as environment variables (never hardcode these):
+   ```bash
+   export SNOWFLAKE_ACCOUNT="your-account-identifier"
+   export SNOWFLAKE_USER="your-username"
+   export SNOWFLAKE_PASSWORD="your-password"
+   export SNOWFLAKE_WAREHOUSE="COMPUTE_WH"   # default trial warehouse
+   ```
+4. Run:
+   ```bash
+   pip install "snowflake-connector-python[pandas]"
+   python sql/load_data_snowflake.py
+   ```
+
+This creates the database/schema/tables (`sql/01b_schema_snowflake.sql`) and bulk-loads the
+processed CSVs via `write_pandas` (Parquet-staged bulk load, not row-by-row inserts). The
+same 7 queries in `sql/02_business_queries.sql` run unchanged against this schema -- window
+functions, CTEs, and `::numeric` casts all work identically in Snowflake.
+
+**Worth knowing if asked about this in an interview:** Snowflake accepts PRIMARY KEY/FOREIGN
+KEY constraints syntactically but doesn't enforce them at write time the way Postgres does --
+they're optimizer hints, not guarantees. Data quality here is enforced upstream instead, by
+`tests/test_data_quality.py`.

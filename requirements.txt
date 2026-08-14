@@ -10,3 +10,4 @@ statsmodels
 pyspark==3.5.3
 streamlit
 pytest
+snowflake-connector-python[pandas]
