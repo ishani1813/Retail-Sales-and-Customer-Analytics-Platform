@@ -32,6 +32,15 @@ would actually ask, each mapped to the SQL query that answers it.
 │   │                                        and native PivotTables
 │   └── update_excel_raw_data.py            refreshes the Raw Data sheet after re-running
 │                                            the notebook, without touching the formulas
+├── analysis/
+│   ├── clustering_segmentation.py   order-level K-means segmentation
+│   ├── forecasting.py               Holt-Winters monthly sales forecast
+│   └── sparkml_pipeline.py          PySpark/SparkML profit-margin regression
+├── tests/
+│   └── test_data_quality.py         16 pytest data-quality checks (schema, referential
+│                                     integrity, business-logic invariants)
+├── app/
+│   └── streamlit_app.py             interactive, filterable companion to the Tableau dashboard
 ├── dashboard/
 │   └── BUILD_GUIDE.md    field-by-field spec for the Tableau dashboard
 └── business_questions.md
@@ -59,6 +68,8 @@ Then:
 - Rebuild the dashboard per [`dashboard/BUILD_GUIDE.md`](dashboard/BUILD_GUIDE.md) — built
   here using Tableau Public's free browser-based Web Authoring, since the Tableau/Power BI
   desktop apps don't run on Linux.
+- Explore interactively: `streamlit run app/streamlit_app.py` — filterable KPIs and charts
+  alongside the static Tableau dashboard.
 
 ## Key findings (from the real ~100K-row dataset)
 - **Discounting is eroding margin at real scale.** Average margin drops steadily from 20.0%
@@ -92,6 +103,49 @@ Then:
    10% repeat-purchase rate among existing customers would generate ~10,000 additional
    orders, or roughly ₹37.5M in incremental profit at the dataset's ~15% average margin —
    an untapped lever with no execution cost beyond the incentive program itself.
+
+## Extended analysis: segmentation, forecasting, SparkML
+
+Three additional analyses on top of the core pipeline, plus a test suite and an interactive
+app — see [`analysis/`](analysis/), [`tests/`](tests/), and [`app/`](app/).
+
+**Order segmentation (K-means).** Segments orders by discount depth, basket size, and margin
+rather than customer-level RFM — every customer here has exactly one order, so RFM would be
+degenerate (Frequency = 1 for all 100,000 customers). Best k = 2, silhouette 0.149:
+"Deep-Discount, Thin-Margin" (53,210 orders, 35.9% avg discount, 11.6% avg margin) vs.
+"Full-Price, High-Margin" (46,790 orders, 12.9% avg discount, 18.7% avg margin).
+
+![Segmentation elbow and silhouette](dashboard/segmentation_elbow.png)
+
+**Monthly sales forecasting (Holt-Winters).** 1.4% backtest MAPE on 5 years of real
+transaction data, holding out the last 6 months to validate before forecasting forward.
+
+![Sales forecast](dashboard/sales_forecast.png)
+
+**SparkML profit-margin prediction.** Feature engineering reprocessed in PySpark DataFrames;
+a GBTRegressor predicts profit margin from order characteristics (RMSE 0.0441, R² 0.29 on
+held-out data). Runs on a local Spark session (`local[*]`) — not a real multi-node cluster,
+worth saying plainly if asked.
+
+**Data quality tests.** 16 pytest tests covering schema, referential integrity (orders →
+customers/products), value ranges, and business-logic invariants (e.g. ship_date ≥
+order_date, profit_margin actually equals profit/sales). All 16 pass against the production
+dataset.
+
+**Interactive explorer.** `app/streamlit_app.py` — a filterable companion to the static
+Tableau dashboard: region/category/city-tier/date filters with KPIs and charts recomputed
+live.
+
+Run any of these yourself:
+```bash
+cd analysis
+python clustering_segmentation.py
+python forecasting.py --periods 6
+python sparkml_pipeline.py
+cd ..
+pytest tests/ -v
+streamlit run app/streamlit_app.py
+```
 
 ## Dashboard
 [Indian Retail Sales Analytics — live on Tableau Public](https://public.tableau.com/app/profile/ishani.sarkar2749/viz/IndianRetailSalesAnalytics_17859999640720/Dashboard1)
