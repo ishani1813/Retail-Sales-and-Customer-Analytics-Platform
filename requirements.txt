@@ -5,3 +5,8 @@ openpyxl
 jupyter
 sqlalchemy
 psycopg2-binary
+scikit-learn
+statsmodels
+pyspark==3.5.3
+streamlit
+pytest
