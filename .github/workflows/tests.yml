@@ -17,7 +17,10 @@ jobs:
           python-version: "3.12"
 
       - name: Install dependencies
-        run: pip install pandas numpy scikit-learn pytest
+        run: pip install pandas numpy scikit-learn pytest ruff
+
+      - name: Lint (ruff)
+        run: ruff check analysis/ tests/ app/
 
       - name: Build processed data from the synthetic sample (CI doesn't have the real dataset)
         run: python scripts/build_processed_from_sample.py

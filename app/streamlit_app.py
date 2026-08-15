@@ -15,9 +15,9 @@ Run from the repo root:
 
 import os
 
+import matplotlib.pyplot as plt
 import pandas as pd
 import streamlit as st
-import matplotlib.pyplot as plt
 
 DATA_DIR = os.path.join(os.path.dirname(__file__), "..", "data", "processed")
 

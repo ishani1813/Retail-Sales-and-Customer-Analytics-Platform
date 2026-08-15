@@ -26,14 +26,12 @@ Usage:
 import argparse
 import sys
 
-import numpy as np
-import pandas as pd
 import matplotlib.pyplot as plt
+import pandas as pd
 from sklearn.cluster import KMeans
-from sklearn.preprocessing import StandardScaler, OneHotEncoder
 from sklearn.compose import ColumnTransformer
-from sklearn.pipeline import Pipeline
 from sklearn.metrics import silhouette_score
+from sklearn.preprocessing import OneHotEncoder, StandardScaler
 
 NUMERIC_FEATURES = ["sales", "quantity", "discount", "profit_margin", "delivery_days"]
 CATEGORICAL_FEATURES = ["category", "ship_mode"]
@@ -148,7 +146,7 @@ def run_order_segmentation(orders_path: str, products_path: str, output_path: st
 
     # elbow + silhouette plot, saved for the README/dashboard
     ks = list(sweep.keys())
-    fig, axes = plt.subplots(1, 2, figsize=(10, 4))
+    _fig, axes = plt.subplots(1, 2, figsize=(10, 4))
     axes[0].plot(ks, [sweep[k]["inertia"] for k in ks], marker="o", color="#0F6E62")
     axes[0].set_title("Elbow method (inertia)")
     axes[0].set_xlabel("k")
@@ -186,7 +184,7 @@ def run_customer_rfm(orders_path: str, output_path: str):
     )
     scaler = StandardScaler()
     X = scaler.fit_transform(rfm)
-    best_k, sweep = choose_k(X)
+    best_k, _sweep = choose_k(X)
     model = KMeans(n_clusters=best_k, random_state=42, n_init=10)
     rfm["segment_id"] = model.fit_predict(X)
     rfm.to_csv(output_path)

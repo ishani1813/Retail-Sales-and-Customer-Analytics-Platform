@@ -18,11 +18,11 @@ Usage:
 
 import argparse
 
+import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
-import matplotlib.pyplot as plt
-from statsmodels.tsa.holtwinters import ExponentialSmoothing
 from sklearn.metrics import mean_absolute_percentage_error
+from statsmodels.tsa.holtwinters import ExponentialSmoothing
 
 
 def build_monthly_series(orders_path: str) -> pd.Series:
@@ -40,22 +40,30 @@ def build_monthly_series(orders_path: str) -> pd.Series:
     return monthly
 
 
-def backtest(series: pd.Series, holdout: int = 6) -> float:
-    """Hold out the last `holdout` months, fit on everything before that,
-    and report MAPE on the held-out months. This is the number you actually
-    quote on a resume/interview -- 'forecast accuracy' without a backtest
-    number attached isn't a verifiable claim."""
+def backtest(series: pd.Series, holdout: int = 6) -> dict:
+    """Hold out the last `holdout` months, fit on everything before that, and
+    report MAPE, MAE, and RMSE on the held-out months -- plus the actual vs.
+    predicted values themselves, so the backtest can be plotted, not just
+    summarized as a single percentage. A number without the underlying
+    train/validation split visible isn't independently checkable."""
     if len(series) <= holdout + 6:
         print(f"Series too short ({len(series)} points) for a {holdout}-month backtest; skipping.")
-        return float("nan")
+        return {}
     train, test = series.iloc[:-holdout], series.iloc[-holdout:]
     model = ExponentialSmoothing(
         train, trend="add", seasonal="add" if len(train) >= 24 else None,
         seasonal_periods=12 if len(train) >= 24 else None,
     ).fit()
-    preds = model.forecast(holdout)
+    preds = pd.Series(model.forecast(holdout).values, index=test.index)
+
     mape = mean_absolute_percentage_error(test, preds)
-    return mape
+    mae = np.mean(np.abs(test.values - preds.values))
+    rmse = np.sqrt(np.mean((test.values - preds.values) ** 2))
+
+    return {
+        "train": train, "test": test, "preds": preds,
+        "mape": mape, "mae": mae, "rmse": rmse,
+    }
 
 
 def fit_and_forecast(series: pd.Series, periods: int = 6):
@@ -70,16 +78,27 @@ def fit_and_forecast(series: pd.Series, periods: int = 6):
     return model, forecast
 
 
-def plot_forecast(series: pd.Series, forecast: pd.Series, mape: float, output_path: str):
-    fig, ax = plt.subplots(figsize=(9, 4.5))
+def plot_forecast(series: pd.Series, forecast: pd.Series, bt: dict, output_path: str):
+    """Two panels: (1) the full history with the forward forecast, and (2)
+    a zoomed-in actual-vs-predicted view of just the backtest window -- the
+    second panel is the one that actually substantiates the MAPE/MAE/RMSE
+    numbers, rather than asking the reader to trust a single percentage."""
+    _fig, axes = plt.subplots(1, 2, figsize=(13, 4.5))
+
+    ax = axes[0]
     ax.plot(series.index, series.values, label="Actual monthly sales", color="#0F6E62")
-    ax.plot(forecast.index, forecast.values, label="Forecast", color="#D97706", linestyle="--", marker="o")
-    title = "Monthly Sales Forecast"
-    if not np.isnan(mape):
-        title += f"  (backtest MAPE: {mape:.1%})"
-    ax.set_title(title)
+    ax.plot(forecast.index, forecast.values, label="Forward forecast", color="#D97706", linestyle="--", marker="o")
+    ax.set_title("Full history + forward forecast")
     ax.set_ylabel("Sales (INR)")
-    ax.legend()
+    ax.legend(fontsize=8)
+
+    ax = axes[1]
+    if bt:
+        ax.plot(bt["train"].index[-12:], bt["train"].values[-12:], label="Train (last 12mo shown)", color="#94A3B8")
+        ax.plot(bt["test"].index, bt["test"].values, label="Actual (held out)", color="#0F6E62", marker="o")
+        ax.plot(bt["preds"].index, bt["preds"].values, label="Predicted", color="#D97706", linestyle="--", marker="o")
+        ax.set_title(f"Backtest: MAPE {bt['mape']:.1%} | MAE ₹{bt['mae']:,.0f} | RMSE ₹{bt['rmse']:,.0f}")
+        ax.legend(fontsize=8)
     plt.tight_layout()
     plt.savefig(output_path, dpi=110)
     print(f"Saved forecast plot to {output_path}")
@@ -89,20 +108,25 @@ def run(orders_path: str, periods: int, output_csv: str, output_plot: str):
     series = build_monthly_series(orders_path)
     print(f"Built monthly series: {len(series)} months, "
           f"{series.index.min().date()} to {series.index.max().date()}")
+    print(f"Train period: {series.index[0].date()} to {series.index[-7].date()} ({len(series)-6} months)")
+    print(f"Validation (backtest) period: {series.index[-6].date()} to {series.index[-1].date()} (6 months)")
 
-    mape = backtest(series)
-    if not np.isnan(mape):
-        print(f"Backtest MAPE (last 6 months held out): {mape:.1%}")
+    bt = backtest(series)
+    if bt:
+        print("\nBacktest results (last 6 months held out):")
+        print(f"  MAPE: {bt['mape']:.1%}")
+        print(f"  MAE:  ₹{bt['mae']:,.0f}")
+        print(f"  RMSE: ₹{bt['rmse']:,.0f}")
 
-    model, forecast = fit_and_forecast(series, periods)
-    print(f"\nForecast for next {periods} months:")
+    _model, forecast = fit_and_forecast(series, periods)
+    print(f"\nForecast period: {forecast.index[0].date()} to {forecast.index[-1].date()} ({periods} months)")
     print(forecast.round(0).to_string())
 
     forecast.rename("forecast_sales").to_csv(output_csv)
     print(f"\nSaved forecast to {output_csv}")
 
-    plot_forecast(series, forecast, mape, output_plot)
-    return forecast, mape
+    plot_forecast(series, forecast, bt, output_plot)
+    return forecast, bt
 
 
 if __name__ == "__main__":
