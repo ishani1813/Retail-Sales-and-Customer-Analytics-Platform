@@ -14,14 +14,26 @@ Run from the repo root:
 """
 
 import os
+import subprocess
+import sys
 
 import matplotlib.pyplot as plt
 import pandas as pd
 import streamlit as st
 
 DATA_DIR = os.path.join(os.path.dirname(__file__), "..", "data", "processed")
+BUILD_SCRIPT = os.path.join(os.path.dirname(__file__), "..", "scripts", "build_processed_from_sample.py")
 
 st.set_page_config(page_title="Indian Retail Analytics Explorer", layout="wide")
+
+# data/processed/*.csv is gitignored (real analysis uses the full downloaded
+# Kaggle dataset, not something to commit) -- so a fresh clone or a Streamlit
+# Cloud deploy has no processed data yet. Same fallback CI already uses:
+# build it from the committed synthetic sample instead of crashing.
+_using_sample_data = False
+if not os.path.exists(os.path.join(DATA_DIR, "orders.csv")):
+    _using_sample_data = True
+    subprocess.run([sys.executable, BUILD_SCRIPT], check=True)
 
 
 @st.cache_data
@@ -31,6 +43,18 @@ def load_data():
     customers = pd.read_csv(os.path.join(DATA_DIR, "customers.csv"))
     df = orders.merge(products, on="product_id", how="left").merge(customers, on="customer_id", how="left")
     return df
+
+
+if _using_sample_data:
+    st.info(
+        "Running on the synthetic sample dataset (~3.9K orders), not the full "
+        "100K-row Kaggle dataset used for the real analysis and Tableau "
+        "dashboard — the full dataset isn't committed to this repo. Numbers "
+        "here will differ from the README's reported results; this is here "
+        "to demo the app's interactivity, not to reproduce those numbers. "
+        "See data/raw/README.md to run this against the real dataset locally.",
+        icon="ℹ️",
+    )
 
 
 @st.cache_data

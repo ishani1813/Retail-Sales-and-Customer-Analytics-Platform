@@ -4,3 +4,11 @@ __pycache__/
 .ipynb_checkpoints/
 data/raw/indian_store_data.csv
 data/processed/*.csv
+
+# LibreOffice/Excel lock files (created while a spreadsheet is open,
+# never meant to be committed -- one slipped into the very first commit)
+.~lock.*#
+~$*.xlsx
+
+# Personal working notes, not project documentation
+IMPROVEMENTS.md

@@ -1,4 +1,4 @@
-![Tests](https://github.com/ishani1813/indian-retail-analytics/actions/workflows/tests.yml/badge.svg)
+![Tests](https://github.com/ishani1813/Retail-Sales-and-Customer-Analytics-Platform/actions/workflows/tests.yml/badge.svg)
 ![Python](https://img.shields.io/badge/python-3.12-blue.svg)
 ![License](https://img.shields.io/badge/license-MIT-green.svg)
 
@@ -78,7 +78,10 @@ flowchart TD
 **Tableau dashboard, Streamlit app, and Excel workbook** — screenshots not yet embedded here;
 live links below until they're added:
 - Tableau: see [Dashboard](#dashboard) section
-- Streamlit: run locally per [How to run](#how-to-run) — not deployed to a public URL yet
+- Streamlit: run locally per [How to run](#how-to-run), or deploy your own copy free on
+  [Streamlit Community Cloud](https://share.streamlit.io) — point it at `app/streamlit_app.py`.
+  No dataset upload needed: it auto-generates from the committed synthetic sample if the
+  real processed data isn't present (see the in-app notice when that happens).
 - Excel: [`excel/regional_performance_summary.xlsx`](excel/regional_performance_summary.xlsx)
   (download and open directly — PivotTables/charts don't render in GitHub's file preview)
 
