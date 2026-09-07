@@ -75,15 +75,29 @@ flowchart TD
 
 ![Sales forecast with backtest](dashboard/sales_forecast.png)
 
-**Tableau dashboard, Streamlit app, and Excel workbook** — screenshots not yet embedded here;
-live links below until they're added:
-- Tableau: see [Dashboard](#dashboard) section
+**Streamlit explorer — live filtering, K-means segments, and forecast:**
+
+<table>
+<tr>
+<td><img src="dashboard/streamlit_filters.png" alt="Streamlit app with region/category/city-tier filters and live KPIs" width="450"/></td>
+<td><img src="dashboard/streamlit_segments_forecast.png" alt="Streamlit app showing K-means segments and sales forecast" width="450"/></td>
+</tr>
+</table>
+
+**Tableau dashboard — live, interactive** ([full version here](#dashboard)):
+
+![Tableau dashboard](dashboard/tableau_dashboard.png)
+
+**Excel — PivotTable summary by sub-category:**
+
+![Excel pivot summary](dashboard/excel_pivot_summary.png)
+
 - Streamlit: run locally per [How to run](#how-to-run), or deploy your own copy free on
   [Streamlit Community Cloud](https://share.streamlit.io) — point it at `app/streamlit_app.py`.
   No dataset upload needed: it auto-generates from the committed synthetic sample if the
   real processed data isn't present (see the in-app notice when that happens).
 - Excel: [`excel/regional_performance_summary.xlsx`](excel/regional_performance_summary.xlsx)
-  (download and open directly — PivotTables/charts don't render in GitHub's file preview)
+  (download and open directly for the full interactive PivotTables/charts)
 
 ## Business questions
 See [`business_questions.md`](business_questions.md) — six questions a retail operations lead

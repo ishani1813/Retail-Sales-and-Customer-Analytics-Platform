@@ -17,6 +17,14 @@ import os
 import subprocess
 import sys
 
+import matplotlib
+# Force the non-interactive Agg backend *before* importing pyplot. Without
+# this, matplotlib auto-selects a backend at import time -- on some Linux
+# setups (missing/mismatched Qt or GTK libraries) that auto-pick is a GUI
+# backend, which then segfaults (a native crash, not a catchable Python
+# exception) the moment a plot is actually rendered. Agg only ever renders
+# to an image buffer, which is all a web app needs anyway.
+matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 import pandas as pd
 import streamlit as st

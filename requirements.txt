@@ -1,13 +1,17 @@
-pandas
-numpy
-matplotlib
-openpyxl
+# Python 3.11-3.12 recommended. Python 3.14 (very new as of writing) caused
+# a native segfault on app/streamlit_app.py's matplotlib rendering with these
+# exact same package versions -- the Python version was the actual variable,
+# not these pins. Use a venv with a stable Python if you hit the same issue.
+pandas==2.2.2
+numpy==2.5.0
+matplotlib==3.11.0
+openpyxl==3.1.5
 jupyter
-sqlalchemy
-psycopg2-binary
-scikit-learn
-statsmodels
+sqlalchemy==2.0.52
+psycopg2-binary==2.9.12
+scikit-learn==1.9.0
+statsmodels==0.14.6
 pyspark==3.5.3
-streamlit
+streamlit==1.63.0
 pytest
-snowflake-connector-python[pandas]
+snowflake-connector-python[pandas]==4.7.3
