@@ -1,22 +1,5 @@
 """
 SparkML Feature Engineering + Profit-Margin Regression
-========================================================
-
-Reprocesses the same cleaning/feature-engineering steps from
-notebooks/01_data_cleaning.ipynb through Spark DataFrames + Spark MLlib
-instead of pandas/scikit-learn, and trains a regression model to predict
-profit margin from order characteristics.
-
-This runs on a LOCAL Spark session (`local[*]`) -- it is not connected to a
-real multi-node cluster. That's a normal, honest way to demonstrate Spark/
-SparkML competency without needing cluster infrastructure, and it's worth
-saying exactly that if asked in an interview: the DataFrame API, MLlib
-Pipeline structure, and distributed-style groupBy/join operations are
-identical to what you'd run on a real cluster -- only the number of
-executors changes.
-
-Usage:
-    python sparkml_pipeline.py --orders ../data/processed/orders.csv --products ../data/processed/products.csv
 """
 
 import argparse
