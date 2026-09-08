@@ -1,14 +1,4 @@
 -- Indian Retail Sales Analytics — Snowflake Schema
--- Same normalized structure as sql/01_schema.sql (PostgreSQL), adapted for Snowflake.
--- Run this in a Snowflake worksheet (or via load_data_snowflake.py, which creates
--- these automatically) before loading the CSVs from data/processed/.
---
--- One real difference worth knowing if asked in an interview: Snowflake accepts
--- PRIMARY KEY / FOREIGN KEY / UNIQUE constraints syntactically, but does NOT
--- enforce them at write time the way Postgres does -- they're metadata/documentation
--- only, used by the query optimizer as hints. Data quality has to be enforced
--- upstream (which is exactly what tests/test_data_quality.py does here) rather
--- than relying on the database to reject bad rows.
 
 CREATE DATABASE IF NOT EXISTS retail_analytics;
 USE DATABASE retail_analytics;
@@ -50,6 +40,3 @@ CREATE OR REPLACE TABLE orders (
     postal_code_missing                 BOOLEAN
 );
 
--- The same 7 business queries in sql/02_business_queries.sql run against this
--- schema with no changes needed -- window functions, CTEs, ::numeric casts,
--- and || concatenation are all supported the same way in Snowflake.
