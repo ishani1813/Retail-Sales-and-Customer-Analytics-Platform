@@ -1,26 +1,5 @@
 """
 Order Segmentation via K-Means Clustering
-==========================================
-
-Why order-level, not customer-level RFM:
-In the real ~100K-row dataset, every customer has exactly one order (see
-README "Key findings"), so there's no repeat-purchase signal to build
-Recency/Frequency/Monetary segments from -- Frequency would be 1 for every
-single row, which collapses RFM into a meaningless constant. Instead, this
-script segments individual ORDERS by their purchasing-pattern characteristics
-(basket size, discount depth, margin, delivery profile, category mix). This
-answers a real business question: "are there distinct types of purchase
-behavior happening on the platform, regardless of who's buying?" -- useful
-for merchandising and discount-strategy decisions even with zero repeat
-customers.
-
-If you re-run this against a dataset that DOES have repeat customers, see
-the `--mode rfm` flag, which switches to classic customer-level RFM
-segmentation instead.
-
-Usage:
-    python clustering_segmentation.py --input ../data/processed/orders.csv
-    python clustering_segmentation.py --input ../data/processed/orders.csv --mode rfm
 """
 
 import argparse
