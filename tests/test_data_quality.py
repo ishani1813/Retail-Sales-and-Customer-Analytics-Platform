@@ -4,12 +4,6 @@ Data quality tests for the processed retail tables.
 Run from the repo root:
     pytest tests/ -v
 
-These validate the OUTPUT of notebooks/01_data_cleaning.ipynb
-(data/processed/customers.csv, products.csv, orders.csv), not the raw
-Kaggle extract -- the raw data is expected to be messy (that's what the
-cleaning notebook exists to fix). If these fail, the cleaning logic broke
-something, or the schema in sql/01_schema.sql has drifted from what the
-notebook actually produces.
 """
 
 import os
