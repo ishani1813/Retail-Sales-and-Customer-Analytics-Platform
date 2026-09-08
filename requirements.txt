@@ -1,7 +1,3 @@
-# Python 3.11-3.12 recommended. Python 3.14 (very new as of writing) caused
-# a native segfault on app/streamlit_app.py's matplotlib rendering with these
-# exact same package versions -- the Python version was the actual variable,
-# not these pins. Use a venv with a stable Python if you hit the same issue.
 pandas==2.2.2
 numpy==2.5.0
 matplotlib==3.11.0
