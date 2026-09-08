@@ -2,12 +2,6 @@
 Generates a SYNTHETIC sample dataset that mirrors the schema of the
 'Indian Store Data' dataset on Kaggle (abuhumzakhan/store-data):
 https://www.kaggle.com/datasets/abuhumzakhan/store-data
-
-This is placeholder data ONLY, used to build and test the cleaning/SQL/dashboard
-pipeline end-to-end. Replace data/raw/indian_store_data.csv with the real
-100K-row download from Kaggle before doing the actual analysis and writing
-your final business recommendations — findings from synthetic data aren't
-real findings.
 """
 import numpy as np
 import pandas as pd
