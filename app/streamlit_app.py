@@ -18,6 +18,7 @@ import subprocess
 import sys
 
 import matplotlib
+
 # Force the non-interactive Agg backend *before* importing pyplot. Without
 # this, matplotlib auto-selects a backend at import time -- on some Linux
 # setups (missing/mismatched Qt or GTK libraries) that auto-pick is a GUI
