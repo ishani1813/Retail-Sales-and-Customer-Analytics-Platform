@@ -1,19 +1,5 @@
 """
 Monthly Sales Forecasting (Holt-Winters Exponential Smoothing)
-================================================================
-
-Aggregates order-level sales to a monthly time series and forecasts the next
-N months. Uses Holt-Winters instead of Prophet/SARIMAX deliberately: with
-~4-5 years of monthly data (48-60 points), a triple-exponential-smoothing
-model is honestly the right-sized tool -- it has few parameters to overfit,
-it's fast, and it's a model you can actually explain end-to-end in an
-interview. Swap in SARIMAX or Prophet if you have more history or need
-exogenous regressors (promotions calendar, holidays, etc.) -- the
-`fit_and_forecast()` function is written so the model object is the only
-thing you'd need to swap out.
-
-Usage:
-    python forecasting.py --input ../data/processed/orders.csv --periods 6
 """
 
 import argparse
