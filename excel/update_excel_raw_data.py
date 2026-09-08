@@ -1,14 +1,3 @@
-"""
-Refreshes the Raw Data sheet in excel/regional_performance_summary.xlsx using whatever
-is currently in data/processed/ (orders.csv, customers.csv, products.csv).
-
-Run this AFTER re-running the notebook against the real dataset, so data/processed/
-contains the real ~100K rows. All the formulas in the other sheets (Region Summary,
-Profit by Region-Year, Sales by CityType-Region) reference the Raw Data sheet by range,
-so they recalculate automatically once this is done — no need to rebuild those.
-
-Usage: python update_excel_raw_data.py
-"""
 import pandas as pd
 from openpyxl import load_workbook
 from openpyxl.utils.dataframe import dataframe_to_rows
