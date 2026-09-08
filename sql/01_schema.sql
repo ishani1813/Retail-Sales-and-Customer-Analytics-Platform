@@ -1,5 +1,4 @@
 -- Indian Retail Sales Analytics — Schema
--- Run this first to create the normalized tables, then load the CSVs from data/processed/
 
 DROP TABLE IF EXISTS orders;
 DROP TABLE IF EXISTS customers;
@@ -40,13 +39,3 @@ CREATE TABLE orders (
     postal_code_missing         BOOLEAN
 );
 
--- Loading from psql (adjust paths as needed):
--- \copy customers FROM 'data/processed/customers.csv' WITH (FORMAT csv, HEADER true);
--- \copy products  FROM 'data/processed/products.csv'  WITH (FORMAT csv, HEADER true);
--- \copy orders    FROM 'data/processed/orders.csv'    WITH (FORMAT csv, HEADER true);
---
--- Or from Python:
--- import pandas as pd, sqlalchemy as sa
--- engine = sa.create_engine("postgresql://user:pass@localhost:5432/retail_analytics")
--- pd.read_csv("data/processed/customers.csv").to_sql("customers", engine, if_exists="append", index=False)
--- (repeat for products, orders — load customers and products before orders, for the FK constraints)
