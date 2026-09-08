@@ -1,14 +1,3 @@
-"""
-Builds data/processed/*.csv from the synthetic SAMPLE file, using the exact
-same logic as notebooks/01_data_cleaning.ipynb. Used by CI (which doesn't
-have the real 100K dataset) and available locally as a quick sanity check
-without needing the real Kaggle download.
-
-For real analysis, always prefer running the actual notebook against the
-real dataset (see data/raw/README.md) -- this script's output is for
-pipeline-testing only.
-"""
-
 import os
 import pandas as pd
 
