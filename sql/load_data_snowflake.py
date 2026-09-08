@@ -1,21 +1,4 @@
 """
-Loads the cleaned CSVs from data/processed/ into Snowflake, and creates the
-target tables first if they don't already exist (via sql/01b_schema_snowflake.sql).
-
-Requires a free Snowflake trial account (https://signup.snowflake.com/) --
-30 days, no credit card needed. See the "Snowflake setup" section in the
-main README for how to find your account identifier.
-
-SECURITY: credentials are read from environment variables, never hardcoded.
-Set them before running:
-
-    export SNOWFLAKE_ACCOUNT="your-account-identifier"   # e.g. "abc12345.ap-south-1"
-    export SNOWFLAKE_USER="your-username"
-    export SNOWFLAKE_PASSWORD="your-password"
-    export SNOWFLAKE_WAREHOUSE="COMPUTE_WH"               # default trial warehouse name
-    python sql/load_data_snowflake.py
-
-Usage:
     python sql/load_data_snowflake.py
 """
 
@@ -58,10 +41,6 @@ def run_schema_script(conn):
     with open(SCHEMA_FILE) as f:
         raw = f.read()
 
-    # Strip comment-only lines from the WHOLE file first, then split on ';'.
-    # (Splitting first and filtering chunks that "start with --" is a bug --
-    # a chunk can have a comment block followed by a real statement, and
-    # checking only the chunk's start silently drops the real statement too.)
     no_comments = "\n".join(line for line in raw.splitlines() if not line.strip().startswith("--"))
     statements = [s.strip() for s in no_comments.split(";") if s.strip()]
 
@@ -85,8 +64,6 @@ def main():
                 print(f"Missing {path} -- run notebooks/01_data_cleaning.ipynb first.")
                 sys.exit(1)
             df = pd.read_csv(path)
-            # Snowflake convention: unquoted identifiers are upper-cased, so
-            # match column names to upper case to avoid quoting headaches
             df.columns = [c.upper() for c in df.columns]
             success, num_chunks, num_rows, _ = write_pandas(conn, df, table)
             status = "OK" if success else "FAILED"
