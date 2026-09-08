@@ -1,14 +1,5 @@
 """
 Interactive Retail Analytics Explorer (Streamlit)
-===================================================
-
-A live, filterable companion to the static Tableau dashboard -- lets a
-reviewer filter by region/category/date range and see KPIs, the discount-
-margin relationship, and (if available) segment and forecast outputs
-recompute in real time. Tableau stays the source of truth for the polished
-static dashboard; this exists to show backend/interactive-app skills the
-Tableau piece can't demonstrate on its own.
-
 Run from the repo root:
     streamlit run app/streamlit_app.py
 """
