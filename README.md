@@ -2,7 +2,7 @@
 ![Python](https://img.shields.io/badge/python-3.12-blue.svg)
 ![License](https://img.shields.io/badge/license-MIT-green.svg)
 
-# Indian Retail Sales Analytics
+# Retail Sales and Customer Analytics Platform
 
 End-to-end analyst project: raw data → Python cleaning → SQL analysis (PostgreSQL +
 Snowflake) → Excel summary → Tableau dashboard → ML segmentation/forecasting → interactive
